@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:demo_app/constant.dart';
 
 class Converter extends StatefulWidget {
   @override
@@ -7,15 +8,37 @@ class Converter extends StatefulWidget {
 
 class _ConverterState extends State<Converter> {
   String _binary = '';
-  String _decimal =
-      ''; // _decimal = int.parse(_binary, radix: 2).toRadixString(10);
+  String _decimal = '';
 
-  String texto(String palabra) {
-    if (palabra == '') {
-      return 'Delete';
+  String texto(String palabra) => palabra == '' ? 'Delete' : palabra;// ACTIALIZADO
+
+  void saberNumero(String numero) {// POR MEJORAR ESTE CONDICIONAL
+    if (numero != '') {
+      _binary = _binary + numero;
+      _decimal = int.parse(_binary, radix: 2).toRadixString(10);
     } else {
-      return palabra;
+      _binary = '';
+      _decimal = '';
     }
+  }
+
+  Container containers(String num) {//Contenedores de los numeros a mostrar (DECIMALES O BINARIO)
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      alignment: Alignment.centerRight,
+      child: Text(
+        num,
+        textAlign: TextAlign.right,
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(
+              int.parse(
+                "#FF5722".replaceAll('#', '0xff'),
+              ),
+            ),
+            fontSize: 35),
+      ),
+    );
   }
 
   Expanded boton(String numero) {
@@ -27,22 +50,10 @@ class _ConverterState extends State<Converter> {
           color: Color(int.parse("#0069C0".replaceAll('#', '0xff'))),
           onPressed: () {
             setState(() {
-              if (numero != '') {
-                _binary = _binary + numero;
-                _decimal = int.parse(_binary, radix: 2).toRadixString(10);
-              } else {
-                _binary = '';
-                _decimal = '';
-              }
+              saberNumero(numero);
             });
           },
-          child: Text(
-            texto(numero),
-            style: new TextStyle(
-              fontSize: 30.0,
-              color: Colors.white,
-            ),
-          ),
+          child: Text(texto(numero), style: kStyleNumber),
         ),
       ),
     );
@@ -55,44 +66,25 @@ class _ConverterState extends State<Converter> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-                height: 40.0,
-                alignment: Alignment.centerLeft,
-                child: Center(child: Text("Binary -> Decimal"))),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              alignment: Alignment.centerRight,
-              child: Text(
-                '$_binary',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(int.parse("#FF5722".replaceAll('#', '0xff'))),
-                    fontSize: 35),
+              height: 40.0,
+              alignment: Alignment.centerLeft,
+              child: Center(
+                child: Text("Binary -> Decimal"),
               ),
             ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Row(children: <Widget>[
-              Text(_binary),
-              SizedBox(
-                child: Padding(padding: EdgeInsets.all(8),child: Text('=>'),),
-              ),
-              Text(_decimal),
-            ]),
-            SizedBox(
-              height: 20.0,
-            ),
+            containers(_binary),//Muestra el numero binario
+            containers(_decimal),//Muestra el numero decimal
+            kSizeBox,
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  boton('1'),
-                  boton('0'),
+                  boton('1'),//Presiona boton 1
+                  boton('0'),//Presiona boton 0
                 ],
               ),
             ),
-            boton(''),
+            boton(''),//Presiona boton delete
           ]),
     );
   }
